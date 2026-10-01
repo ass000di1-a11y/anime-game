@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ato:3 Anime Cards</title>
+    <script src="https://telegram.org"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: #121214;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .header {
+            background: #1a1a1e;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .balance {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .pack-container {
+            margin: 40px 0;
+        }
+        .pack-btn {
+            background: linear-gradient(135deg, #8a2be2, #4a00e0);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+            transition: transform 0.2s;
+        }
+        .pack-btn:active {
+            transform: scale(0.95);
+        }
+        .card-display {
+            min-height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .anime-card {
+            background: #202024;
+            border: 3px solid #3a3a42;
+            border-radius: 16px;
+            padding: 20px;
+            width: 180px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: dropIn 0.5s ease forwards;
+        }
+        .common { border-color: #8c8c8c; }
+        .rare { border-color: #007bff; box-shadow: 0 0 15px rgba(0,123,255,0.5); }
+        .legendary { border-color: #ffd700; box-shadow: 0 0 25px rgba(255,215,0,0.7); }
+        
+        .rarity-badge {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        .common .rarity-badge { background: #555; }
+        .rare .rarity-badge { background: #007bff; }
+        .legendary .rarity-badge { background: #ffd700; color: #000; }
+
+        .card-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .card-anime {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        @keyframes dropIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Ato:3 Anime Cards 🪙</h2>
+        <div class="balance">Баланс: <span id="coins">500</span> 🪙</div>
+    </div>
+
+    <div class="pack-container">
+        <button class="pack-btn" onclick="openPack()">ОТКРЫТЬ ПАК (100 🪙)</button>
+    </div>
+
+    <div class="card-display" id="cardDisplay">
+        <p style="color: #666;">Нажмите на пак, чтобы испытать удачу!</p>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        let coins = 500;
+        
+        const characters = [
+            { name: "Наруто Узумаки", anime: "Naruto", rarity: "common" },
+            { name: "Луффи", anime: "One Piece", rarity: "common" },
+            { name: "Танджиро Камадо", anime: "Demon Slayer", rarity: "common" },
+            { name: "Саске Учиха", anime: "Naruto", rarity: "rare" },
+            { name: "Зоро", anime: "One Piece", rarity: "rare" },
+            { name: "Годжо Сатору", anime: "Jujutsu Kaisen", rarity: "legendary" },
+            { name: "Сайтама", anime: "One Punch Man", rarity: "legendary" }
+        ];
+
+        function openPack() {
+            if (coins < 100) {
+                alert("Недостаточно монет!");
+                return;
+            }
+
+            coins -= 100;
+            document.getElementById('coins').innerText = coins;
+
+            const randomCard = characters[Math.floor(Math.random() * characters.length)];
+
+            const display = document.getElementById('cardDisplay');
+            display.innerHTML = `
+                <div class="anime-card ${randomCard.rarity}">
+                    <div class="rarity-badge">${randomCard.rarity}</div>
+                    <div class="card-name">${randomCard.name}</div>
+                    <div class="card-anime">${randomCard.anime}</div>
+                </div>
+            `;
+
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('heavy');
+            }
+        }
+    </script>
+</body>
+</html>
